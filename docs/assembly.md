@@ -11,7 +11,7 @@ Chassis
 
 ### Step 1
 
-Print all parts from the folder `chassis-14500` in a single copy.
+Print all parts from the `chassis-14500` folder in a single copy.
 
 ### Step 2
 

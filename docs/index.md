@@ -5,7 +5,7 @@ sMARS rover documentation
 --------
 
 * [Electronic parts](hardware.md)
-    * [Сonnection shield](сonnection-shield.md)
+    * [Сonnection shield](connection-shield.md)
     * [LED board](led-board.md)
     * [Parts list](parts-list.md)
 * [3d printable parts](3d-print.md)
