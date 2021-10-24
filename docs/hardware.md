@@ -21,7 +21,9 @@ Mandatory parts
 **Option 2: ESP32-CAM** - 1pc
 
 ESP32-CAM mod development is currently in progress. The body was designed with the possibility of using ESP32-CAM as the control board, however, the mount itself has not been designed yet.
+
 ESP32-CAM is much powerful than Arduino, already holds Wi-Fi and Bluetooth onboard, and allows to transmit video from the camera over Wi-Fi in real-time! Sounds good? Stay tuned or welcome to help with development.
+
 If you don't have a separate programmer for ESP32, better to choose ESP32-CAM with the motherboard in the box.
 
 ### Motors
@@ -33,12 +35,15 @@ If you don't have a separate programmer for ESP32, better to choose ESP32-CAM wi
 **Option 1 (recommended): MX1508** - 1pc
 
 MX1508 installs on a holding board, under the Arduino, and it becomes possible to install a Connection shield for connecting wires.
+
 There is room for the MX1508 under the Arduino only if you use mods for 14500 or AAA batteries.
+
 Optional: MX1508 allows you to make connections using connectors, this will greatly simplify the disassembly of the robot, although it will not save you from soldering, because at least you will need to solder the connectors themselves.
 
 **Other options:**
 
 In theory, you can use other boards like Adafruit Motor Shield v1, v2, and others.
+
 But keep in mind that the Adafruit Motor Shield is mounted on top of the Arduino, and there will not be much room in the case for the wires commutation. Most likely, the wires will need to be soldered to the board, since the height of the case does not allow the use of Dupont connectors in a vertical position.
 
 ### Battery
@@ -46,15 +51,21 @@ But keep in mind that the Adafruit Motor Shield is mounted on top of the Arduino
 **Option 1 (recommended): 14500 batteries** - 2pc
 
 This option will require a special chassis coming in addition to the project. This option works well if you're building your first robot and don't have a printed chassis yet.
+
 Advantages of this option: there is room for MX1508, no complete disassembly of the robot is required to access the batteries.
+
 For the battery contact pads, you will need nickel strip.
 
 **Option 2: AAA batteries** - 3pc
 
 This option is compatible with the standard chassis and 4wd chassis, you only need a special holding board - [thingiverse.com/thing:2762630](https://www.thingiverse.com/thing:2762630).
+
 Advantages of this option: there is room for MX1508, AAA batteries can be purchased at the nearest store.
+
 Disadvantages of this option: Complete disassembly of the robot is required to access the batteries. The 4.5V from the batteries is enough to power the motors, but there is no headroom to power additional devices such as servo motors. When using additional mods, there may be a lack of power.
+
 Since 4.5V is actually the lowest possible supply voltage, you will not be able to use NMHg AAA batteries as they only supply 3.6V and this is not enough.
+
 For the battery contact pads, you will need nickel strip. Batteries should be connected directly to the 5V pin of the Arduino, not the Vin pin.
 
 **Option 3: 9V battery** - 1pc
@@ -67,6 +78,7 @@ To connect the battery, you need a contact pad with wires.
 **Screws with pad M3x5 (screws for computer case)** - 5pc
 
 Optional: If you are going to use 14500 chassis you will need one additional screw with pad M3x5 (a total - 6pc).
+
 Additionally, you will need a pan head screws M4x20-30 (2pc) and self-locking nuts M4 (2pc), for slave wheels mounting.
 
 Recommended parts
@@ -164,6 +176,3 @@ Compatible parts
 OLED screen support for sMARS rover is currently in progress. At this moment we have done: a connector for I²C (IIC) display on the Connection shield and mount for 0.96" display on the body (`front-glass-display.3mf`, `front-glass-display-support.3mf`)
 
 **OLED Display 0.96" 128x64** - 1pc
-
-
-
