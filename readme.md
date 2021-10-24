@@ -51,7 +51,7 @@ SMARS modular robot - [thingiverse.com/thing:2662828](https://www.thingiverse.co
 Documentation
 -------------
 
-You can find the documentation in [docs](/docs) folder of this repo.
+You can find the documentation in [docs](/docs) folder of this repo or here [i-amdroid.github.io/smars-rover/](https://i-amdroid.github.io/smars-rover/).
 
 Documentation sections:
 

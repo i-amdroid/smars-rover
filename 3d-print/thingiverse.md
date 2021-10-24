@@ -19,7 +19,7 @@ Project features
 * Mount with standard screws for computer cases
 * Includes source files for further improvements
 
-You can find full project with electronic parts, documentation and code examples on [GitHub](#).
+You can find the full project with electronic parts, documentation, and code examples on [GitHub](https://github.com/i-amdroid/smars-rover).
 
 In progress
 -----------

@@ -61,7 +61,7 @@ Mount small locker.
 
 ### Step 6
 
-Print 2 master and 2 slave wheels (`wheels` folder), 16 normal tracks and 16 reflected tracks (`track` folder), and 2 M4 adapters from this project [thingiverse.com/thing:2829401](https://www. thingiverse.com/thing:2829401).
+Print 2 master and 2 slave wheels (`wheels` folder), 16 normal tracks and 16 reflected tracks (`track` folder), and 2 M4 adapters from this project [thingiverse.com/thing:2829401](https://www.thingiverse.com/thing:2829401).
 
 Assemble the right and left tracks using filament pieces with a diameter of 1.75mm.
 

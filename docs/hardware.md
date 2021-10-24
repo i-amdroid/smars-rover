@@ -78,7 +78,7 @@ It is possible to control the SMARS robot without Bluetooth, using the commands 
 
 **Option 1 (recommended): AT-09 (or HM-10)** - 1pc
 
-A bit more expensive than HC-06 but support Bluetooth 4.0 BLE. BLE is a more energy-efficient protocol and is more stable, but requires BLE-compatible software. There is not so much software for BLE, but there is at least one decent application and library for it - Dabble, see the [Code](/docs/software.md) section.
+A bit more expensive than HC-06 but support Bluetooth 4.0 BLE. BLE is a more energy-efficient protocol and is more stable, but requires BLE-compatible software. There is not so much software for BLE, but there is at least one decent application and library for it - Dabble, see the [Code](software.md) section.
 
 **Option 2: HC-06 (or HC-05)** - 1pc.
 
@@ -112,7 +112,7 @@ Required components:
 * Power switch - 1pc
 * Ceramic capacitor 0.1uF (often labeled as 104) - 3pc
 
-For the assembly and connection diagram, see the [Сonnection shield](/docs/сonnection-shield.md) section.
+For the assembly and connection diagram, see the [Сonnection shield](сonnection-shield.md) section.
 
 ### Wheel lock
 
@@ -136,7 +136,7 @@ Required components:
 * Yellow LED 5mm - 2pc
 * Resistor 47ohm - 1pc
 
-For assembly and connection diagram, see [LED board](/docs/led-board.md) section.
+For assembly and connection diagram, see [LED board](led-board.md) section.
 
 ### Distance sensor
 
