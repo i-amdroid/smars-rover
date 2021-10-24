@@ -20,7 +20,7 @@ Yellow LED was chosen because it can be powered from one pin and needed amperage
 Assembly diagram
 ----------------
 
-![Top view](./images/cs-top.svg)
+![Top view](./images/led-board.svg)
 
 The size of the LED board after cutting the breadboard is 54x3mm (20 holes).
 
