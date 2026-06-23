@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #define CUSTOM_SETTINGS
 #define INCLUDE_GAMEPAD_MODULE
 #include <Dabble.h>
@@ -9,7 +11,7 @@
 // const int bt_pin_rx = 3; // Bluetooth: RX
 // const int bt_pin_tx = 2; // Bluetooth: TX
 
-// Important: Left motor is motor A 
+// Important: Left motor is motor A
 const int mb_pin_in1 = 6; // Motor board: IN1, PWM
 const int mb_pin_in2 = 7; // Motor board: IN2
 const int mb_pin_in3 = 5; // Motor board: IN3, PWM
@@ -33,7 +35,7 @@ int mb_speed_initial = 80;                 // mb_speed_initial + mb_gear * mb_sp
 int mb_speed_current;
 int mb_speed_multiplier = 30;
 int mb_gear = 0;                           // max gear is 4
-int mb_gear_counter = 0;        
+int mb_gear_counter = 0;
 int mb_gear_treshhold = 300;               // Number of iterations button should be pressed for changing speed number
 unsigned long mb_gear_timer = 0;
 
@@ -148,9 +150,9 @@ void loop() {
     mb_gear = 0;
   }
 
-  // Calculating speed for moving forward and turns on the run. 
+  // Calculating speed for moving forward and turns on the run.
   mb_speed_current = mb_speed_initial + mb_gear * mb_speed_multiplier;
-  
+
   // Handling movement motors
 
   /*
@@ -196,7 +198,7 @@ void loop() {
     digitalWrite(mb_pin_in4, LOW);
   }
   */
-  
+
   // Advanced (PWM/analog) control, 5 levels of speed
   // Motor A is right
   // Forward
@@ -215,7 +217,7 @@ void loop() {
     digitalWrite(mb_pin_in2, HIGH);
     digitalWrite(mb_pin_in4, HIGH);
   }
-  // Left on the run forward 
+  // Left on the run forward
   if ((GamePad.isLeftPressed() || GamePad.isSquarePressed()) && GamePad.isUpPressed()) {
     //Serial.println("left");
     analogWrite(mb_pin_in1, LOW);
@@ -231,7 +233,7 @@ void loop() {
     digitalWrite(mb_pin_in2, LOW);
     digitalWrite(mb_pin_in4, LOW);
   }
-  // Left on the run backward 
+  // Left on the run backward
   if ((GamePad.isLeftPressed() || GamePad.isSquarePressed()) && GamePad.isDownPressed()) {
     //Serial.println("left");
     analogWrite(mb_pin_in1, LOW);
@@ -307,7 +309,7 @@ void loop() {
   }
 
   // Holding shovel in position.
-  if (!GamePad.isTrianglePressed() && !GamePad.isCrossPressed()) { 
+  if (!GamePad.isTrianglePressed() && !GamePad.isCrossPressed()) {
     if (millis() >= srv_timer + srv_step_delay) {
       srv_timer = millis(); // Updating timer.
       //Serial.print("rotate to ");
@@ -368,7 +370,7 @@ void loop() {
 
   // Handling buzzer control by distance sensor
   // Park tronic mode
-  
+
   if (ds_distance <= 12) {
     buz_delay = 1000;
   }
@@ -385,7 +387,7 @@ void loop() {
 
   // Handling manual buzzer control: enabling
   // Should go after Raange distance code
-  
+
   if (GamePad.isSelectPressed()) {
     buz_delay = 100; // permanent sound
   }
