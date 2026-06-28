@@ -1,8 +1,7 @@
 .idea/
-src/
-tmp/
 .claude/
+tmp/
 software/dozer-esp/
 software/dozer-uno/
-software/esp-mac/
 software/receiver-oled/
+software/camera-test/
