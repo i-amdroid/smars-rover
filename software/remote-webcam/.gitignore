@@ -1,0 +1,7 @@
+.pio
+.idea
+managed_components
+dependencies.lock
+sdkconfig
+sdkconfig.old
+sdkconfig.seeed_xiao_esp32s3

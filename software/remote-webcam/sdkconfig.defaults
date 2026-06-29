@@ -1,0 +1,25 @@
+# --- USB / TinyUSB ---
+CONFIG_TINYUSB_RHPORT_FS=y
+
+# --- UVC camera 1: MJPEG, isochronous, single QVGA 320x240 frame size ---
+CONFIG_FORMAT_MJPEG_CAM1=y
+# Bulk transfer: on ESP32-S3 full-speed USB it gives much higher throughput
+# than isochronous (Espressif's own recommendation). Isochronous capped fps.
+CONFIG_UVC_MODE_BULK_CAM1=y
+CONFIG_FRAMESIZE_QVGA=y
+CONFIG_UVC_CAM1_FRAMERATE=15
+CONFIG_UVC_CAM1_FRAMESIZE_WIDTH=320
+CONFIG_UVC_CAM1_FRAMESIZE_HEIGT=240
+# CONFIG_UVC_CAM1_MULTI_FRAMESIZE is not set
+
+CONFIG_TUSB_PRODUCT="SMARS rover camera"
+CONFIG_TUSB_MANUFACTURER="SMARS"
+
+# --- PSRAM (XIAO ESP32-S3 has 8 MB octal PSRAM) ---
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_OCT=y
+CONFIG_SPIRAM_SPEED_80M=y
+
+# --- Flash / partition ---
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+CONFIG_PARTITION_TABLE_SINGLE_APP_LARGE=y
