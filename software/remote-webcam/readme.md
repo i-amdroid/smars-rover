@@ -1,20 +1,37 @@
-Remote webcam
-=============
+Remote webcam (controller)
+==========================
 
-Receives 320x240 MJPEG video over ESP-NOW from the rover (`rover-esp`) and
-exposes it to an Android phone as a standard **USB UVC webcam**. No local
-camera or display.
+The handheld controller. It reads a joystick + buttons and sends them to the
+robot over ESP-NOW, receives the robot's 320x240 MJPEG video, and exposes that
+video to an Android phone as a standard **USB UVC webcam**.
 
 ```
-rover-esp (camera) --ESP-NOW (MJPEG)--> remote-webcam --USB UVC--> Android
+controller (this) --ESP-NOW joystick--> robot
+robot --ESP-NOW MJPEG video--> controller --USB UVC--> Android
 ```
 
-The rover sends MJPEG and UVC also carries MJPEG, so received frames are handed
-to the USB host as-is — no decoding. Plug the XIAO's USB-C into an Android phone
-(OTG).
+Received MJPEG is handed to the USB host as-is (no decoding). Plug the XIAO's
+USB-C into an Android phone (OTG).
 
-- This board's MAC: `98:3D:AE:60:84:C0`
-- Sender (rover-esp) MAC: `DC:DA:0C:57:59:C8`
+- This board (controller) MAC: `98:3D:AE:60:84:C0`
+- Robot MAC: `DC:DA:0C:57:59:C8`
+
+This merges the old `remote-simple` joystick controller into the video path.
+Because the sketch is pure ESP-IDF (see below), the joystick is read with the
+native `esp_adc` driver and sent with raw `esp_now`, not Arduino + ESPNowW.
+
+Joystick / buttons / camera
+---------------------------
+
+- Sends a raw `JoystickData` struct (X/Y axes -1000..1000, 7 buttons, plus a
+  `camera_on` flag) to the robot every ~50 ms via `esp_now_send`.
+- The robot streams video only while `camera_on` is set. The **E button**
+  toggles it (`CAMERA_TOGGLE_PIN` in `main.c`). When off, the controller's UVC
+  `fb_get` returns nothing, so it idles instead of re-sending a frozen frame.
+- Joystick calibration (center + extremes) is stored in NVS and re-run by
+  holding the **joystick button** — ported from `remote-simple`.
+- Pins (Xiao ESP32-S3): X=GPIO1, Y=GPIO2; buttons A=3, B=4, C=5, D=6, E=9,
+  F=8, joystick-press=7. (USB-OTG uses GPIO19/20, so no conflict.)
 
 Build & flash (PlatformIO)
 --------------------------
@@ -66,5 +83,5 @@ Notes
   blaming the firmware.
 - ESP32-S3 USB is full-speed; ample for QVGA MJPEG.
 - Serial logs go to UART0 (not USB) since UVC owns the USB port.
-- A pure ESP-IDF / `idf.py` copy of this sketch is kept in `../remote-webcam-idf`
-  as a fallback.
+- A pure ESP-IDF / `idf.py` copy of the original video-only receiver is kept in
+  `../test-webcam-idf` as a reference/fallback.
