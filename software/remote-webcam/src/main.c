@@ -7,9 +7,6 @@
 // path. Pure ESP-IDF (the USB UVC stack needs IDF 5.x and ESPNowCam doesn't
 // build there), so the joystick is read and sent with the native esp_adc /
 // esp_now APIs instead of Arduino + ESPNowW.
-//
-// This board (controller) MAC: 98:3D:AE:60:84:C0
-// Robot MAC:                   DC:DA:0C:57:59:C8
 
 #include <string.h>
 #include <stdlib.h>
@@ -32,8 +29,8 @@
 
 static const char *TAG = "controller";
 
-// Robot (rover) MAC — joystick frames are sent here.
-static uint8_t robot_mac[6] = {0xDC, 0xDA, 0x0C, 0x57, 0x59, 0xC8};
+// Rover MAC (peer) — joystick frames are sent here. Set to your rover's MAC.
+static uint8_t robot_mac[6] = {0x98, 0x3D, 0xAE, 0x60, 0x84, 0xC0};
 
 // ===== Joystick / button pins (Xiao ESP32-S3) =====
 #define JOYSTICK_X_CH    ADC_CHANNEL_0   // GPIO1
@@ -67,7 +64,8 @@ typedef struct {
   uint8_t camera_on;    // 1 = robot should stream video, 0 = stop
 } JoystickData;
 
-static volatile bool camera_on = true;  // start streaming
+static volatile bool camera_on = false;  // default OFF (controller owns this — it
+                                         // also gates the local UVC stream)
 
 // ===== Joystick conditioning (ported from remote-simple) =====
 static const int ADC_SAMPLES = 64;     // oversampling per axis
@@ -150,7 +148,7 @@ static void calibrate_joystick(void) {
   long sx = 0, sy = 0;
   int n = 0;
   int64_t t0 = now_ms();
-  while (now_ms() - t0 < 1500) {
+  while (now_ms() - t0 < 5000) {
     sx += read_axis(JOYSTICK_X_CH);
     sy += read_axis(JOYSTICK_Y_CH);
     n++;
@@ -190,7 +188,7 @@ static void control_task(void *arg) {
     if (abs(cx) < OUTPUT_DEADZONE) cx = 0;
     if (abs(cy) < OUTPUT_DEADZONE) cy = 0;
 
-    // Camera toggle on button press edge.
+    // Camera toggle on button press edge (E).
     bool cam_btn = btn_pressed(CAMERA_TOGGLE_PIN);
     if (cam_btn && !cam_btn_prev) {
       camera_on = !camera_on;
@@ -212,14 +210,20 @@ static void control_task(void *arg) {
     };
     esp_now_send(robot_mac, (uint8_t *)&jd, sizeof(jd));
 
-    // Joystick-press triggers calibration (held).
-    if (btn_pressed(BTN_JOYSTICK_PIN)) {
-      vTaskDelay(pdMS_TO_TICKS(50));
-      if (btn_pressed(BTN_JOYSTICK_PIN)) {
-        calibrate_joystick();
-        while (btn_pressed(BTN_JOYSTICK_PIN)) vTaskDelay(pdMS_TO_TICKS(10));
-      }
+    // Hold the joystick button for 5 s to enter calibration. The long hold
+    // avoids accidental triggers, and the fixed 5 s + 5 s phases let you do it
+    // by timing alone (no serial monitor needed: this board's USB is the UVC
+    // camera, so its log isn't easily visible).
+    static int64_t joy_press_start = 0;
+    static bool joy_prev = false;
+    bool joy = btn_pressed(BTN_JOYSTICK_PIN);
+    if (joy && !joy_prev) joy_press_start = now_ms();
+    if (joy && now_ms() - joy_press_start >= 5000) {
+      calibrate_joystick();
+      while (btn_pressed(BTN_JOYSTICK_PIN)) vTaskDelay(pdMS_TO_TICKS(20));
+      joy = false;
     }
+    joy_prev = joy;
 
     vTaskDelay(pdMS_TO_TICKS(50));
   }

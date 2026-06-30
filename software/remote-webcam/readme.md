@@ -13,9 +13,6 @@ robot --ESP-NOW MJPEG video--> controller --USB UVC--> Android
 Received MJPEG is handed to the USB host as-is (no decoding). Plug the XIAO's
 USB-C into an Android phone (OTG).
 
-- This board (controller) MAC: `98:3D:AE:60:84:C0`
-- Robot MAC: `DC:DA:0C:57:59:C8`
-
 This merges the old `remote-simple` joystick controller into the video path.
 Because the sketch is pure ESP-IDF (see below), the joystick is read with the
 native `esp_adc` driver and sent with raw `esp_now`, not Arduino + ESPNowW.
