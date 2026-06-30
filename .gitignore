@@ -3,7 +3,8 @@
 tmp/
 software/dozer-esp/
 software/dozer-uno/
-software/test-oled/
+software/test-rx-oled/
+software/test-tx-video/
 software/test-camera/
 software/test-webcam/
 software/test-webcam-idf/
