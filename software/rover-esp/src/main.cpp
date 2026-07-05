@@ -22,9 +22,9 @@ static uint8_t controllerMac[6] = {0x98, 0x3D, 0xAE, 0x61, 0x72, 0x3C};
 #define SERVO1_PIN 1    // D0 — shoulder
 #define SERVO2_PIN 2    // D1 — gripper
 #define DRV_IN1    43   // D6 \ motor 1
-#define DRV_IN2    5    // D4 /
-#define DRV_IN3    4    // D3 \ motor 2
-#define DRV_IN4    3    // D2 /
+#define DRV_IN2    6    // D5 /
+#define DRV_IN3    5    // D4 \ motor 2
+#define DRV_IN4    4    // D3 /
 #define LED_PIN    44   // D7 — white LEDs via S8050
 
 // LEDC: motors on channels 4-7 (timers 2-3); ESP32Servo gets timers 0-1.
@@ -36,10 +36,16 @@ static uint8_t controllerMac[6] = {0x98, 0x3D, 0xAE, 0x61, 0x72, 0x3C};
 #define MOTOR_PWM_RES  8     // 0-255
 
 // ===== Movement tuning (from dozer-esp) =====
-static const int MIN_SPEED = 65;
-static const int MAX_SPEED = 120;
+// Duty is 0-255 (8-bit LEDC). MAX = 75% of full scale, MIN raised so the N20s
+// actually break away from standstill (below this they buzz but don't turn).
+static const int MIN_SPEED = 80;   // ~35% — kick-start floor
+static const int MAX_SPEED = 180;  // ~75% of 255
 static const int DEADZONE = 10;
 static const float MOTOR_CORRECTION = 1.0f;  // 1.0 = no trim; <1 trims right, >1 trims left
+// Turn sharpness on the move: how much the inner track slows at full steer.
+// 0.0 = no slowdown (goes straight); 1.0 = inner drops to a crawl. 0.6 was the
+// value road-tested on the real robot.
+static const float STEER_GAIN = 0.6f;
 
 // ===== Servos =====
 static Servo servo1, servo2;
@@ -95,7 +101,11 @@ static void stopMotors(void) {
   setMotor(M2A_CH, M2B_CH, 0, 0);
 }
 
-// Tank mixing (ported from dozer-esp). Direction: +1 fwd, -1 back, 0 stop.
+// Tank mixing. Two regimes:
+//   * Moving (y != 0): smooth arc. Outer track keeps its throttle speed, the
+//     inner track only *slows* (down to a crawl) — it never reverses, so the
+//     turn stays gentle.
+//   * In place (y == 0): pivot — the tracks counter-rotate.
 static void calculateTankMovement(int16_t x, int16_t y, int &lSpeed, int &rSpeed, int &lDir, int &rDir) {
   if (abs(x) < DEADZONE) x = 0;
   if (abs(y) < DEADZONE) y = 0;
@@ -106,29 +116,26 @@ static void calculateTankMovement(int16_t x, int16_t y, int &lSpeed, int &rSpeed
     return;
   }
 
-  float xNorm = (float)x / 1000.0f;
-
   if (y == 0) {
-    // Pure rotation in place.
+    // Pivot in place: tracks spin opposite ways.
+    int turn = map(abs(x), DEADZONE, 1000, MIN_SPEED, MAX_SPEED);
     lDir = (x > 0) ? 1 : -1;
     rDir = (x > 0) ? -1 : 1;
-    int turn = map(abs(x), DEADZONE, 1000, MIN_SPEED, MAX_SPEED);
     lSpeed = rSpeed = turn;
   } else {
+    // Arc: both tracks same direction; inner one slowed, never reversed.
     lDir = rDir = (y > 0) ? 1 : -1;
-    int base = map(abs(y), DEADZONE, 1000, MIN_SPEED, MAX_SPEED);
-    float steer = fabs(xNorm);
-    if (x > 0) {
-      lSpeed = base;
-      rSpeed = base * (1.0f - steer * 0.6f);
-    } else if (x < 0) {
-      rSpeed = base;
-      lSpeed = base * (1.0f - steer * 0.6f);
+    int base = map(abs(y), DEADZONE, 1000, MIN_SPEED, MAX_SPEED);  // outer/throttle speed
+    float steer = fabsf(x / 1000.0f);          // 0..1
+    int inner = (int)(base * (1.0f - steer * STEER_GAIN));
+    if (inner < MIN_SPEED) inner = MIN_SPEED;  // keep it crawling, don't stall/buzz
+    if (x > 0) {          // turning right -> right track is inner
+      lSpeed = base;  rSpeed = inner;
+    } else if (x < 0) {   // turning left  -> left track is inner
+      lSpeed = inner; rSpeed = base;
     } else {
       lSpeed = rSpeed = base;
     }
-    if (lSpeed < MIN_SPEED && lSpeed > 0) lSpeed = MIN_SPEED;
-    if (rSpeed < MIN_SPEED && rSpeed > 0) rSpeed = MIN_SPEED;
   }
 
   if (MOTOR_CORRECTION < 1.0f) rSpeed *= MOTOR_CORRECTION;

@@ -23,9 +23,9 @@ Wiring (Xiao ESP32-S3)
 | Servo 1 (shoulder) PWM | D0 | 1 |
 | Servo 2 (gripper) PWM | D1 | 2 |
 | DRV8833 IN1 (motor 1) | D6 | 43 |
-| DRV8833 IN2 (motor 1) | D4 | 5 |
-| DRV8833 IN3 (motor 2) | D3 | 4 |
-| DRV8833 IN4 (motor 2) | D2 | 3 |
+| DRV8833 IN2 (motor 1) | D5 | 6 |
+| DRV8833 IN3 (motor 2) | D4 | 5 |
+| DRV8833 IN4 (motor 2) | D3 | 4 |
 | White LEDs (S8050 base) | D7 | 44 |
 
 Controls
