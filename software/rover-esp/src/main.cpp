@@ -35,11 +35,23 @@ static uint8_t controllerMac[6] = {0x98, 0x3D, 0xAE, 0x61, 0x72, 0x3C};
 #define MOTOR_PWM_FREQ 20000
 #define MOTOR_PWM_RES  8     // 0-255
 
-// ===== Movement tuning (from dozer-esp) =====
-// Duty is 0-255 (8-bit LEDC). MAX = 75% of full scale, MIN raised so the N20s
-// actually break away from standstill (below this they buzz but don't turn).
-static const int MIN_SPEED = 80;   // ~35% — kick-start floor
-static const int MAX_SPEED = 180;  // ~75% of 255
+// ===== Motor wiring (tune per build — nothing else needs changing) =====
+// Each track is driven by one DRV8833 channel pair. Pick which pair goes to
+// which track and set `reversed` if that motor spins the wrong way, to match
+// your assembly. This build (bench-confirmed): connectors swapped, left reversed.
+struct MotorConfig {
+  int chA;         // LEDC channel -> DRV input A
+  int chB;         // LEDC channel -> DRV input B
+  bool reversed;   // true = swap A/B so "forward" really is forward
+};
+static MotorConfig leftMotor  = { M2A_CH, M2B_CH, true  };  // left  track on M2
+static MotorConfig rightMotor = { M1A_CH, M1B_CH, false };  // right track on M1
+
+// ===== Movement tuning =====
+// Duty is 0-255 (8-bit LEDC). MIN raised so the N20s actually break away from
+// standstill (below this they buzz but don't turn).
+static const int MIN_SPEED = 90;   // ~35% — kick-start floor
+static const int MAX_SPEED = 220;  // ~86% of 255
 static const int DEADZONE = 10;
 static const float MOTOR_CORRECTION = 1.0f;  // 1.0 = no trim; <1 trims right, >1 trims left
 // Turn sharpness on the move: how much the inner track slows at full steer.
@@ -53,7 +65,13 @@ static Servo servo1, servo2;
 static const int S1_MIN = 0, S1_MAX = 90, S1_INIT = 0;
 static const int S2_MIN = 0, S2_MAX = 120, S2_INIT = 0;
 static const int SERVO_STEP_MS = 15;  // MG90S ~ this per degree
-static volatile int s1_target = S1_INIT, s2_target = S2_INIT;
+// MG90S pulse range, calibrated. Stock 500-2500 drives 0 deg past the low stop,
+// where the servo jams and can stick; 600-2400 keeps both ends inside travel
+// (best practice: fit min/max to the actual servo). Tune if yours differs.
+static const int SERVO_MIN_US = 520, SERVO_MAX_US = 2480;
+// Motion is velocity-based: while a button is held the servo steps toward its
+// limit; released -> dir 0 -> it holds where it is (see servo_task).
+static volatile int s1_dir = 0, s2_dir = 0;  // -1 / 0 / +1
 
 // ===== State driven by the controller =====
 static volatile bool camera_on = false;  // default OFF
@@ -81,24 +99,26 @@ typedef struct {
 } JoystickData;
 
 // ===== DRV8833 =====
-static void setMotor(int chA, int chB, int speed, int dir) {
+// Speed = PWM duty on one input; direction = which input gets it; both 0 = coast.
+static void driveMotor(const MotorConfig &m, int speed, int dir) {
   if (speed < 0) speed = 0;
   if (speed > 255) speed = 255;
+  if (m.reversed) dir = -dir;
   if (dir > 0) {
-    ledcWrite(chA, speed);
-    ledcWrite(chB, 0);
+    ledcWrite(m.chA, speed);
+    ledcWrite(m.chB, 0);
   } else if (dir < 0) {
-    ledcWrite(chA, 0);
-    ledcWrite(chB, speed);
+    ledcWrite(m.chA, 0);
+    ledcWrite(m.chB, speed);
   } else {
-    ledcWrite(chA, 0);
-    ledcWrite(chB, 0);  // coast
+    ledcWrite(m.chA, 0);
+    ledcWrite(m.chB, 0);  // coast
   }
 }
 
 static void stopMotors(void) {
-  setMotor(M1A_CH, M1B_CH, 0, 0);
-  setMotor(M2A_CH, M2B_CH, 0, 0);
+  driveMotor(leftMotor, 0, 0);
+  driveMotor(rightMotor, 0, 0);
 }
 
 // Tank mixing. Two regimes:
@@ -151,18 +171,17 @@ static void onJoystickRecv(const uint8_t *mac, const uint8_t *data, int len) {
   const JoystickData *j = (const JoystickData *)data;
   lastRecvMs = millis();
 
-  // Drive.
+  // Drive. Wiring quirks (swapped connectors, reversed left motor) live in the
+  // MotorConfig up top, so here we just hand each track its speed + direction.
   int lS, rS, lD, rD;
   calculateTankMovement(j->x, j->y, lS, rS, lD, rD);
-  setMotor(M1A_CH, M1B_CH, lS, lD);   // motor 1 = left
-  setMotor(M2A_CH, M2B_CH, rS, rD);   // motor 2 = right
+  driveMotor(leftMotor,  lS, lD);
+  driveMotor(rightMotor, rS, rD);
 
-  // Servo 1 (shoulder): A up, C down. Hold to move, release to hold position.
-  if (j->btn_up)        s1_target = S1_MAX;
-  else if (j->btn_down) s1_target = S1_MIN;
-  // Servo 2 (gripper): B close, D open.
-  if (j->btn_right)     s2_target = S2_MAX;
-  else if (j->btn_left) s2_target = S2_MIN;
+  // Servo 1 (shoulder): A up, C down. Servo 2 (gripper): B close, D open.
+  // Hold to move, release to hold position (servo_task integrates the dir).
+  s1_dir = j->btn_up    ? +1 : (j->btn_down ? -1 : 0);
+  s2_dir = j->btn_right ? +1 : (j->btn_left ? -1 : 0);
 
   // Camera state comes from the controller (it gates the controller's UVC too).
   camera_on = j->camera_on;
@@ -178,16 +197,13 @@ static void onJoystickRecv(const uint8_t *mac, const uint8_t *data, int len) {
 }
 
 // ===== Servo stepping task (smooth, independent of the camera) =====
-static void stepServo(Servo &s, int &cur, int target) {
-  if (cur < target) s.write(++cur);
-  else if (cur > target) s.write(--cur);
-}
-
+// One degree per SERVO_STEP_MS while a button is held (~66°/s), clamped to each
+// servo's limits. No button -> dir 0 -> the servo just holds its position.
 static void servo_task(void *arg) {
   int cur1 = S1_INIT, cur2 = S2_INIT;
   for (;;) {
-    stepServo(servo1, cur1, s1_target);
-    stepServo(servo2, cur2, s2_target);
+    if (s1_dir) { cur1 = constrain(cur1 + s1_dir, S1_MIN, S1_MAX); servo1.write(cur1); }
+    if (s2_dir) { cur2 = constrain(cur2 + s2_dir, S2_MIN, S2_MAX); servo2.write(cur2); }
     vTaskDelay(pdMS_TO_TICKS(SERVO_STEP_MS));
   }
 }
@@ -211,16 +227,27 @@ static void deinitCamera(void) {
 }
 
 void setup() {
+  // Pin the DRV8833 inputs LOW the instant we boot, before the slow init below
+  // (delay, radio, camera). Left floating during that window the driver can spin
+  // a motor for a second or two. LEDC takes these pins over further down.
+  pinMode(DRV_IN1, OUTPUT); digitalWrite(DRV_IN1, LOW);
+  pinMode(DRV_IN2, OUTPUT); digitalWrite(DRV_IN2, LOW);
+  pinMode(DRV_IN3, OUTPUT); digitalWrite(DRV_IN3, LOW);
+  pinMode(DRV_IN4, OUTPUT); digitalWrite(DRV_IN4, LOW);
+
   Serial.begin(115200);
   delay(500);
 
   setCpuFrequencyMhz(160);  // heat/power: enough for streaming, cooler
 
-  // Motors (DRV8833) via LEDC.
+  // Motors (DRV8833) via LEDC. Zero each channel's duty before attaching its pin
+  // so the hand-off from the low outputs above stays glitch-free.
   ledcSetup(M1A_CH, MOTOR_PWM_FREQ, MOTOR_PWM_RES);
   ledcSetup(M1B_CH, MOTOR_PWM_FREQ, MOTOR_PWM_RES);
   ledcSetup(M2A_CH, MOTOR_PWM_FREQ, MOTOR_PWM_RES);
   ledcSetup(M2B_CH, MOTOR_PWM_FREQ, MOTOR_PWM_RES);
+  ledcWrite(M1A_CH, 0); ledcWrite(M1B_CH, 0);
+  ledcWrite(M2A_CH, 0); ledcWrite(M2B_CH, 0);
   ledcAttachPin(DRV_IN1, M1A_CH);
   ledcAttachPin(DRV_IN2, M1B_CH);
   ledcAttachPin(DRV_IN3, M2A_CH);
@@ -236,8 +263,8 @@ void setup() {
   ESP32PWM::allocateTimer(1);
   servo1.setPeriodHertz(50);
   servo2.setPeriodHertz(50);
-  servo1.attach(SERVO1_PIN, 500, 2500);
-  servo2.attach(SERVO2_PIN, 500, 2500);
+  servo1.attach(SERVO1_PIN, SERVO_MIN_US, SERVO_MAX_US);
+  servo2.attach(SERVO2_PIN, SERVO_MIN_US, SERVO_MAX_US);
   servo1.write(S1_INIT);
   servo2.write(S2_INIT);
 
@@ -260,6 +287,7 @@ void loop() {
   // Failsafe: no control packets -> stop driving.
   if (now - lastRecvMs > 500) {
     stopMotors();
+    s1_dir = s2_dir = 0;  // don't let a servo run away if the link drops mid-hold
   }
 
   if (camera_on) {

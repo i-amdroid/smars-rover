@@ -52,8 +52,16 @@ Notes
 - DRV8833 needs no library: speed = PWM duty on an input, direction = which of
   the two inputs gets the PWM. Motors on LEDC channels 4-7; servos (ESP32Servo)
   use LEDC timers 0-1.
-- Tunables in `src/main.cpp`: `MIN_SPEED`/`MAX_SPEED`, `MOTOR_CORRECTION`,
-  servo angle limits (`S1_*`, `S2_*`). If a motor or servo runs the wrong way,
-  swap its two pins (or min/max).
+- Tunables in `src/main.cpp`:
+  - **Per-build motor wiring** — `leftMotor` / `rightMotor` (`MotorConfig`): which
+    DRV8833 channel pair drives each track and a `reversed` flag. Adapt a new
+    assembly by editing just these two lines (this build has the connectors
+    swapped and the left motor reversed).
+  - Speed: `MIN_SPEED` (kick-start floor) / `MAX_SPEED`, `MOTOR_CORRECTION`.
+  - Servo: angle limits (`S1_*`, `S2_*`) and pulse range `SERVO_MIN_US` /
+    `SERVO_MAX_US` (calibrated to 600-2400 µs so 0° doesn't jam past the stop).
+- Known quirk: `DRV_IN1` sits on D6 (GPIO43 = UART TX), which idles HIGH during
+  boot, so the right track spins forward for ~1-2 s at power-on until the
+  firmware takes the pin.
 - Camera default off, so the rover boots cool and quiet; it spins the camera up
   only when the controller asks.
