@@ -50,8 +50,8 @@ static MotorConfig rightMotor = { M1A_CH, M1B_CH, false };  // right track on M1
 // ===== Movement tuning =====
 // Duty is 0-255 (8-bit LEDC). MIN raised so the N20s actually break away from
 // standstill (below this they buzz but don't turn).
-static const int MIN_SPEED = 90;   // ~35% — kick-start floor
-static const int MAX_SPEED = 220;  // ~86% of 255
+static const int MIN_SPEED = 70;
+static const int MAX_SPEED = 200;
 static const int DEADZONE = 10;
 static const float MOTOR_CORRECTION = 1.0f;  // 1.0 = no trim; <1 trims right, >1 trims left
 // Turn sharpness on the move: how much the inner track slows at full steer.
