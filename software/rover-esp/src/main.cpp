@@ -81,6 +81,9 @@ static volatile uint32_t lastRecvMs = 0;
 CamXiao Camera;
 ESPNowCam radio;
 static bool cam_inited = false;
+// Image orientation (per-build): flip if the camera is mounted rotated/mirrored.
+static const bool CAM_HMIRROR = false;  // false = un-mirror (correct left/right)
+static const bool CAM_VFLIP   = false;  // true = flip vertically if mounted upside down
 static const uint32_t FRAME_INTERVAL_MS = 60;  // ~camera ceiling; non-blocking pace
 static uint32_t lastFrameMs = 0;
 
@@ -218,6 +221,12 @@ static bool initCamera(void) {
   if (!Camera.begin()) {
     Serial.println("Camera init failed");
     return false;
+  }
+  // Un-mirror the picture (sensor default is a horizontal mirror).
+  sensor_t *s = esp_camera_sensor_get();
+  if (s) {
+    s->set_hmirror(s, CAM_HMIRROR ? 1 : 0);
+    s->set_vflip(s, CAM_VFLIP ? 1 : 0);
   }
   return true;
 }
