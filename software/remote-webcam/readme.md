@@ -25,8 +25,19 @@ Joystick / buttons / camera
 - The robot streams video only while `camera_on` is set. The **E button**
   toggles it (`CAMERA_TOGGLE_PIN` in `main.c`). When off, the controller's UVC
   `fb_get` returns nothing, so it idles instead of re-sending a frozen frame.
-- Joystick calibration (center + extremes) is stored in NVS and re-run by
-  holding the **joystick button** — ported from `remote-simple`.
+- Joystick calibration (center + extremes) is re-run by holding the **joystick
+  button** for 5 s (centered phase, then sweep). Because the pot is ratiometric,
+  its raw ADC values scale with the supply voltage, so a profile captured on one
+  power source (e.g. USB/phone) misbehaves on another (e.g. a sagging battery).
+  Two strategies, selected by `USE_NVS_CALIBRATION` in `main.c`:
+  - **0 (default) — auto-adapt.** A compiled-in reference is rescaled at boot by
+    `k = center_now / center_ref` to match the current supply (stick must be
+    released at power-on; a wild `k` is ignored). Nothing is stored; a manual
+    calibration lasts for the session only. Handles USB, full or half-drained
+    battery without reflashing or per-source profiles.
+  - **1 — NVS profile (old behaviour).** Absolute center/extremes are saved to
+    and restored from NVS, with no supply compensation — recalibrate whenever the
+    power source changes.
 - Pins (Xiao ESP32-S3): X=GPIO1, Y=GPIO2; buttons A=3, B=4, C=5, D=6, E=9,
   F=8, joystick-press=7. (USB-OTG uses GPIO19/20, so no conflict.)
 

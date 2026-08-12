@@ -71,13 +71,29 @@ static volatile bool camera_on = false;  // default OFF (controller owns this �
 static const int ADC_SAMPLES = 64;     // oversampling per axis
 static const int OUTPUT_DEADZONE = 80; // in -1000..1000 units
 
+// Calibration source:
+//   0 = compiled-in reference + boot auto-adapt (default). Rescales the built-in
+//       reference to the current supply, nothing touches NVS. A manual calibrate
+//       is session-only (lost on reboot).
+//   1 = persist/restore via NVS (old behaviour). Stores an absolute profile that
+//       does NOT compensate for supply voltage — recalibrate per power source.
+#define USE_NVS_CALIBRATION 0
+
 typedef struct {
   int mn;
   int center;
   int mx;
 } AxisCal;
+// Working calibration used by map_axis().
 static AxisCal calX = {0, 1886, 4095};
 static AxisCal calY = {0, 1921, 4095};
+// Compiled-in reference, captured once at a nominal ~3.3 V supply.
+// Every boot starts from here. adapt_calibration() rescales it by
+// k = center_now / center_ref to match the current supply (a ratiometric
+// pot scales every reading by one k). A manual calibrate_joystick()
+// overrides the working values directly (no k) for the current session only.
+static const AxisCal calX_ref = {0, 1886, 4095};
+static const AxisCal calY_ref = {0, 1921, 4095};
 
 static adc_oneshot_unit_handle_t adc1;
 
@@ -107,6 +123,9 @@ static int map_axis(int raw, const AxisCal *c) {
   return (int)out;
 }
 
+// Restore an absolute profile from NVS (USE_NVS_CALIBRATION==1). These values are
+// raw ADC counts tied to the supply they were captured at — no k rescaling — so
+// recalibrate whenever the power source changes.
 static void load_calibration(void) {
   nvs_handle_t h;
   if (nvs_open("joycal2", NVS_READONLY, &h) != ESP_OK) {
@@ -172,7 +191,45 @@ static void calibrate_joystick(void) {
   }
   ESP_LOGI(TAG, "Calibration done: X[%d,%d,%d] Y[%d,%d,%d]",
            calX.mn, calX.center, calX.mx, calY.mn, calY.center, calY.mx);
-  save_calibration();
+  if (USE_NVS_CALIBRATION) save_calibration();  // else: session-only (lost on reboot)
+}
+
+// Re-derive the working calibration for the current supply.
+static void adapt_calibration(void) {
+  vTaskDelay(pdMS_TO_TICKS(200));  // let the rail settle after power-up
+  long sx = 0, sy = 0;
+  int n = 0;
+  int64_t t0 = now_ms();
+  while (now_ms() - t0 < 400) {
+    sx += read_axis(JOYSTICK_X_CH);
+    sy += read_axis(JOYSTICK_Y_CH);
+    n++;
+    vTaskDelay(pdMS_TO_TICKS(10));
+  }
+  int cx = sx / n, cy = sy / n;
+
+  // k relative to the reference center; guard against a bad/zero reference.
+  float kx = (calX_ref.center > 0) ? (float)cx / calX_ref.center : 1.0f;
+  float ky = (calY_ref.center > 0) ? (float)cy / calY_ref.center : 1.0f;
+
+  // A legit supply change keeps k near 1 (~3.0-3.4 V rail). A k far outside that
+  // means the stick was NOT centered at boot — don't trust it, keep the reference.
+  if (kx < 0.75f || kx > 1.25f || ky < 0.75f || ky > 1.25f) {
+    ESP_LOGW(TAG, "Adapt skipped (kx=%.3f ky=%.3f) - stick not centered at boot?", kx, ky);
+    calX = calX_ref;
+    calY = calY_ref;
+    return;
+  }
+
+  calX.center = cx;
+  calX.mn = (int)(calX_ref.mn * kx);
+  calX.mx = (int)(calX_ref.mx * kx);
+  calY.center = cy;
+  calY.mn = (int)(calY_ref.mn * ky);
+  calY.mx = (int)(calY_ref.mx * ky);
+
+  ESP_LOGI(TAG, "Adapted cal (kx=%.3f ky=%.3f): X[%d,%d,%d] Y[%d,%d,%d]",
+           kx, ky, calX.mn, calX.center, calX.mx, calY.mn, calY.center, calY.mx);
 }
 
 static inline int btn_pressed(int pin) { return gpio_get_level(pin) == 0; }  // pull-up: pressed = LOW
@@ -370,7 +427,10 @@ void app_main(void) {
 
   adc_init();
   buttons_init();
-  load_calibration();
+  // Mutually exclusive (see USE_NVS_CALIBRATION): restore a saved absolute
+  // profile, or rescale the compiled-in reference to the current supply.
+  if (USE_NVS_CALIBRATION) load_calibration();
+  else                     adapt_calibration();
 
   wifi_init();
   ESP_ERROR_CHECK(esp_now_init());
