@@ -4,9 +4,8 @@
 //   rover --ESP-NOW MJPEG video--> controller
 //
 // Combines the camera/ESP-NOW streamer (rover-esp) with the drive + servo
-// control logic (dozer-esp), but with a DRV8833 motor driver (no library — just
-// PWM) and two servos. Arduino + stock espressif32: no USB UVC here, so no need
-// for ESP-IDF; ESPNowCam (video) + ESP32Servo work out of the box.
+// control logic, a DRV8833 motor driver (no library — just
+// PWM) and two servos.
 
 #include <Arduino.h>
 #include <WiFi.h>
@@ -82,7 +81,7 @@ CamXiao Camera;
 ESPNowCam radio;
 static bool cam_inited = false;
 // Image orientation (per-build): flip if the camera is mounted rotated/mirrored.
-static const bool CAM_HMIRROR = false;  // false = un-mirror (correct left/right)
+static const bool CAM_HMIRROR = true;  // false = un-mirror (correct left/right)
 static const bool CAM_VFLIP   = false;  // true = flip vertically if mounted upside down
 static const uint32_t FRAME_INTERVAL_MS = 60;  // ~camera ceiling; non-blocking pace
 static uint32_t lastFrameMs = 0;
