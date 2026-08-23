@@ -62,8 +62,8 @@ static const float STEER_GAIN = 0.6f;
 static Servo servo1, servo2;
 // Shoulder 0-155 (rests at 15), gripper 0-180 (rests centred at 90).
 // Tune freely; swap min/max to flip direction.
-static const int S1_MIN = 0, S1_MAX = 155, S1_INIT = 15;
-static const int S2_MIN = 0, S2_MAX = 180, S2_INIT = 90;
+static const int S1_MIN = 20, S1_MAX = 155, S1_INIT = 35;
+static const int S2_MIN = 2, S2_MAX = 178, S2_INIT = 90;
 static const int SERVO_STEP_MS = 15;  // MG90S ~ this per degree
 // MG90S pulse range, calibrated. Stock 500-2500 drives 0 deg past the low stop,
 // where the servo jams and can stick; 600-2400 keeps both ends inside travel
