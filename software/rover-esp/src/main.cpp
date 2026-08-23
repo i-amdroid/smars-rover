@@ -57,6 +57,13 @@ static const float MOTOR_CORRECTION = 1.0f;  // 1.0 = no trim; <1 trims right, >
 // 0.0 = no slowdown (goes straight); 1.0 = inner drops to a crawl. 0.6 was the
 // value road-tested on the real robot.
 static const float STEER_GAIN = 0.6f;
+// Pivoting in place has its own duty range. It needs far more break-away
+// torque than driving does — both tracks scrub sideways against the ground —
+// so MIN_SPEED is nowhere near enough to start a turn. Floor it well above
+// that, then cap at half of what's left up to MAX_SPEED so the pivot, once it
+// does move, stays slower than a full-throttle spin.
+static const int PIVOT_MIN_SPEED = 150;
+static const int PIVOT_MAX_SPEED = PIVOT_MIN_SPEED + (MAX_SPEED - PIVOT_MIN_SPEED) / 2;
 
 // ===== Servos =====
 static Servo servo1, servo2;
@@ -141,7 +148,7 @@ static void calculateTankMovement(int16_t x, int16_t y, int &lSpeed, int &rSpeed
 
   if (y == 0) {
     // Pivot in place: tracks spin opposite ways.
-    int turn = map(abs(x), DEADZONE, 1000, MIN_SPEED, MAX_SPEED);
+    int turn = map(abs(x), DEADZONE, 1000, PIVOT_MIN_SPEED, PIVOT_MAX_SPEED);
     lDir = (x > 0) ? 1 : -1;
     rDir = (x > 0) ? -1 : 1;
     lSpeed = rSpeed = turn;
