@@ -1,116 +1,56 @@
 3d printable parts
 ==================
 
-sMARS rover is primarily a body for the SMARS robot, but the project also includes 3 add-ons - a chassis for 14500 batteries, wheels with a  lock, and reflected tracks.
+| Image | Part name | File | Comments | Quantity |
+|-------|-----------|---------|----------|----------|
+| ![image](./../images/3d-print-parts/rover-body-base.png) | Rover body base | rover-esp/body/3mf/base.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/rover-body-front.png) | Rover body front | rover-esp/body/3mf/front.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/rover-body-back.png) | Rover body back | rover-esp/body/3mf/back.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/rover-body-back-door.png) | Rover body back door | rover-esp/body/3mf/back-door.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/rover-front-glass-light.png) | Rover front glass, variant with light mount niche | rover-esp/body/3mf/front-glass-light.3mf | Recommended | 1 |
+| ![image](./../images/3d-print-parts/rover-front-glass-blank.png) | Rover front glass, blank variant | rover-esp/body/3mf/front-glass-blank.3mf | Alternative | 1 |
+| ![image](./../images/3d-print-parts/rover-front-glass-oled-front.png) | Rover front glass, variant for OLED screen, front part | rover-esp/body/3mf/front-glass-oled-front.3mf | Alternative | 1 |
+| ![image](./../images/3d-print-parts/rover-front-glass-oled-back.png) | Rover front glass, variant for OLED screen, back part | rover-esp/body/3mf/front-glass-oled-back.3mf | Alternative | 1 |
+| ![image](./../images/3d-print-parts/rover-light-mount.png) | Rover light mount | rover-esp/body/3mf/light-mount.3mf | Recommended | 1 |
+| ![image](./../images/3d-print-parts/rover-light-mount-cover.png) | Rover light mount cover | rover-esp/body/3mf/light-mount-cover.3mf | Recommended | 1 |
+| ![image](./../images/3d-print-parts/rover-front-slot-top.png) | Rover front add-on slot, top part | rover-esp/body/3mf/front-slot-top.3mf | Alternative to gripper | 1 |
+| ![image](./../images/3d-print-parts/rover-front-slot-bottom.png) | Rover front add-on slot, bottom part | rover-esp/body/3mf/front-slot-bottom.3mf | Alternative to gripper | 1 |
+| ![image](./../images/3d-print-parts/rover-front-slot-plug.png) | Rover front add-on slot plug | rover-esp/body/3mf/front-slot-plug.3mf | Alternative to gripper | 1 |
+| ![image](./../images/3d-print-parts/rover-back-antenna-mount.png) | Rover back antenna mount | rover-esp/body/3mf/back-antenna-mount.3mf | Recommended for video streaming | 1 |
+| ![image](./../images/3d-print-parts/rover-back-slot-plug.png) | Rover back add-on slot plug | rover-esp/body/3mf/back-slot-plug.3mf | Alternative | 1 |
+| ![image](./../images/3d-print-parts/rover-chassis.png) | Rover chassis | rover-esp/chassis-14500/3mf/chassis.3mf | Remixed from [thingiverse.com/thing:2829401](https://www.thingiverse.com/thing:2829401) | 1 |
+| ![image](./../images/3d-print-parts/rover-battery-cover.png) | Rover battery cover | rover-esp/chassis-14500/3mf/battery-cover.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/rover-battery-contact.png) | Rover battery contact pad | rover-esp/chassis-14500/3mf/battery-contact.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/rover-locker-small.png) | Rover motor niche locker | rover-esp/chassis-14500/3mf/locker-small.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/rover-locker-big.png) | Rover slave wheel adapter niche locker | rover-esp/chassis-14500/3mf/locker-big.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/rover-m4-adapter.png) | Rover slave wheel adapter | rover-esp/chassis-14500/3mf/m4-adapter.3mf | Remixed from [thingiverse.com/thing:2829401](https://www.thingiverse.com/thing:2829401) | 2 |
+| ![image](./../images/3d-print-parts/rover-flex-track.png) | Rover flex track | rover-esp/wheels-tracks/3mf/flex-track.3mf | Recommended | 2 |
+| ![image](./../images/3d-print-parts/rover-flex-track-master-wheel-lock.png) | Rover master wheel with lock for flex track | rover-esp/wheels-tracks/3mf/flex-track-master-wheel-lock.3mf | Recommended, remixed from [thingiverse.com/thing:4686208](https://www.thingiverse.com/thing:4686208) | 2 |
+| ![image](./../images/3d-print-parts/rover-flex-track-master-wheel.png) | Rover master wheel for flex track | rover-esp/wheels-tracks/3mf/flex-track-master-wheel.3mf | Alternative, remixed from [thingiverse.com/thing:4686208](https://www.thingiverse.com/thing:4686208) | 2 |
+| ![image](./../images/3d-print-parts/rover-flex-track-slave-wheel.png) | Rover slave wheel for flex track | rover-esp/wheels-tracks/3mf/flex-track-slave-wheel.3mf | Recommended, remixed from [thingiverse.com/thing:4686208](https://www.thingiverse.com/thing:4686208) | 2 |
+| ![image](./../images/3d-print-parts/rover-classic-track.png) | Rover classic track | rover-esp/wheels-tracks/3mf/classic-track.3mf | Alternative, copy from [thingiverse.com/thing:2662828](https://www.thingiverse.com/thing:2662828) | 16 |
+| ![image](./../images/3d-print-parts/rover-classic-track-reflected.png) | Rover classic track reflected | rover-esp/wheels-tracks/3mf/classic-track-reflected.3mf | Alternative, remixed from [thingiverse.com/thing:2662828](https://www.thingiverse.com/thing:2662828) | 16 |
+| ![image](./../images/3d-print-parts/rover-classic-track-master-wheel-lock.png) | Rover master wheel with lock for classic track | rover-esp/wheels-tracks/3mf/classic-track-master-wheel-lock.3mf | Alternative, remixed from [thingiverse.com/thing:4686208](https://www.thingiverse.com/thing:4686208) | 2 |
+| ![image](./../images/3d-print-parts/rover-classic-track-master-wheel.png) | Rover master wheel for classic track | rover-esp/wheels-tracks/3mf/classic-track-master-wheel.3mf | Alternative, remixed from [thingiverse.com/thing:4686208](https://www.thingiverse.com/thing:4686208) | 2 |
+| ![image](./../images/3d-print-parts/rover-classic-track-slave-wheel.png) | Rover slave wheel for classic track | rover-esp/wheels-tracks/3mf/classic-track-slave-wheel.3mf | Alternative, remixed from [thingiverse.com/thing:4686208](https://www.thingiverse.com/thing:4686208) | 2 |
+| ![image](./../images/3d-print-parts/rover-gripper-gear.png) | Rover gripper gear | rover-esp/gripper/3mf/gear.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/rover-gripper-rack.png) | Rover gripper rack | rover-esp/gripper/3mf/rack.3mf |  | 2 |
+| ![image](./../images/3d-print-parts/rover-gripper-finger.png) | Rover gripper finger | rover-esp/gripper/3mf/finger.3mf |  | 2 |
+| ![image](./../images/3d-print-parts/rover-gripper-finger-rubber.png) | Rover gripper finger ruber insert | rover-esp/gripper/3mf/finger-rubber.3mf |  | 2 |
+| ![image](./../images/3d-print-parts/rover-gripper-case-base.png) | Rover gripper case base | rover-esp/gripper/3mf/gripper-case-base.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/rover-gripper-case-cap.png) | Rover gripper case cap | rover-esp/gripper/3mf/gripper-case-cap.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/rover-gripper-shoulder-case-top.png) | Rover gripper shoulder case, top part | rover-esp/gripper/3mf/shoulder-case-top.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/rover-gripper-shoulder-case-bottom.png) | Rover gripper shoulder case, bottom part | rover-esp/gripper/3mf/shoulder-case-bottom.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/remote-body-top.png) | Remote body, top part | remote/body/3mf/body-top.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/remote-body-bottom.png) | Remote body, bottom part | remote/body/3mf/body-bottom.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/remote-button-connector.png) | Remote button connector | remote/body/3mf/button-connector.3mf |  | 4 |
+| ![image](./../images/3d-print-parts/remote-small-button.png) | Remote small button | remote/body/3mf/small-button.3mf |  | 2 |
+| ![image](./../images/3d-print-parts/remote-antenna-pad.png) | Remote internal antenna pad | remote/body/3mf/antenna-pad.3mf | Alternative | 1 |
+| ![image](./../images/3d-print-parts/remote-phone-holder-base.png) | Remote phone holder base | remote/phone-holder/3mf/base.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/remote-phone-holder-cap.png) | Remote phone holder cap | remote/phone-holder/3mf/cap.3mf |  | 1 |
+| ![image](./../images/3d-print-parts/remote-phone-holder-base-rubber.png) | Remote phone holder base rubber | remote/phone-holder/3mf/base-rubber.3mf |  | 2 |
+| ![image](./../images/3d-print-parts/remote-phone-holder-cap-rubber.png) | Remote phone holder cap rubber | remote/phone-holder/3mf/cap-rubber.3mf |  | 1 |
 
-Both the body and all add-ons can be used independently of each other. All parts are fully compatible with the original parts of the SMARS robot, as well as with most add-ons.
-
-Body
-----
-
-### Parts
-
-1. **`body/base.3mf`**\
-  Frame for mounting the front and back of the body. The frame itself mounts on the chassis of the SMARS robot.
-2. **`body/front.3mf`**\
-  The front of the body. Mounts on the frame. Allows you to install the face and front panels. For added reliability, it is advisable to fix with screw with pad (screws for computer case), 1 pc.
-3. **`body/back.3mf`**\
-  The back of the body. Mounts on the frame. Allows you to install a back door.
-4. **`body/back-door.3mf`**\
-  Back door. Mounts on the back of the body using a piece of filament with a diameter of 1.75mm.
-5. **`body/face-blank.3mf`**\
-  Face panel without holes. Installed on the front of the body. Installs in a groove, for additional support, it is advisable to fix it with hot melt glue.
-6. **`body/face.3mf`**\
-  Alternative face panel with holes for distance sensor and LED light. Installed in the same way as the front panel without holes.
-7. **`body/front-glass-blank.3mf`**\
-  Front panel without holes (windshield). Mounts on the front of the body with screws with pad, 4 pc.
-8. **`body/front-glass-display.3mf`**\
-  Front panel with a hole for 0.96" display. Mounts on the front of the body. Locks in with the counterpart and screws with pad, 4 pc.
-9. **`body/front-glass-display-support.3mf`**\
-  The counterpart of the front panel with a display hole. Used to mount the display and front panel to the front of the body.
-10. **`body/splash.3mf`**\
-  Cover for the standard add-on slot when the add-on is not installed.
-
-### Body parts desing
-
-The parts have been designed to maintain maximum compatibility with existing SMARS robot parts while keeping modularity and extensibility.
-
-Both chassis add-on slots are now occupied by the frame, but the frame itself has the same slot at the back into which any compatible add-on (or cover) can be inserted.
-
-The absence of a second slot is compensated by the possibility of installing different face and front panels. At the same time, small-sized add-ons, for example, a distance sensor, can even be placed inside the body.
-
-Since sMARS rover is an open-source project and includes source files of 3D models, you can design face and front panels specifically for your add-ons. Any contributions are welcome.
-
-If you can't develop your own model, the dimensions of the face panel allow placing in it a standard slot for SMARS robot addons. The face panel with the standard slot is under development and will be available soon.
-
-The front panel (windshield) was also conceived as a replaceable part for installing various displays, cameras, and other devices. For greater flexibility, the body is designed with a screw-mounted front panel. The thread is cut by the screw itself directly into the plastic. If frequent replacement of the front panel is planned, or the threads have been damaged, the design allows you to press in the injection nut M3x4.
-
-The back door allows quick access to the electronics. This is convenient for flashing Arduino, and also if your robot has a switch.
-
-### Parts in progress
-
-**Front panel for ESP32-CAM mount**
-
-The body was designed with the possibility of using ESP32-CAM as the control board. ESP32-CAM is much powerful than Arduino, already holds Wi-Fi and Bluetooth onboard, and allows to transmit video from the camera over Wi-Fi in real-time! Sounds good? Stay tuned and welcome to help with development.
-
-**Face panel with a standard slot for SMARS robot add-ons**
-
-Coming soon.
-
-Chassis for 14500 batteries
----------------------------
-
-### Parts
-
-1. **`chassis-14500/chasis-14500.3mf`**\
-  This chassis allows 14500 batteries to be used to power the robot. The batteries are placed in a niche and closed with a cover on the bottom. This allows batteries to be replaced without disassembling the robot. This chassis also has room for the MX1508 motor driver.
-2. **`chassis-14500/chassis-14500-battcon.3mf`**\
-  This part allows you to attach a nickel strip to it to make contact with the batteries. This part is specially designed to be detachable to make it easier to install the strip and solder wires to it. There are 2 slots for the nickel strip on the opposite side of the contact pad, on the chassis, to complete the circuit.
-3. **`chassis-14500/chassis-14500-cover.3mf`**\
-  Battery niche cover. The cover is fixed with a screw with pad (screws for computer case), 1 pc. The thread is cut by the screw itself directly into the plastic. For frequent use, it is recommended to press in the injection nut M3x4.
-4. **`chassis-14500/chassis-14500-locker-big.3mf`**\
-  Large motor niche locker. Allows you to install the MX1508 motor driver.
-5. **`chassis-14500/chassis-14500-locker-small.3mf`**\
-  Small motor niche locker.
-
-### Motors and wheels mount
-
-The chassis allows the installation of 2 or 4 N20 motors with the gearbox. When using the MX1508 motor driver, it may not be possible to route the wires from the motors located in the large niche. However, 2 motors are usually enough.
-
-When using 2 motors, the slave wheels should be mounted on M4 or M3 screws using adapters. Adapters from SMARS Chassis_S Mk2 mod [thingiverse.com/thing:2829401](https://www.thingiverse.com/thing:2829401) are suitable. It is recommended to use M4 screws, as with them the wheel play will be significantly less. Screws with a length of 20 to 30mm (2pc) are suitable, it is advisable to use self-locking nuts M4 (2pc) to prevent loosening of the screws.
-
-Also, in the case of using 2 motors, it is recommended to install both motors either in front or in the back (in the case of the MX1508 motor driver, only in the back) in order to reduce possible deviations to one side when driving in a straight line.
-
-Wheels
-------
-
-### Parts
-
-1. **`wheels/wheel-master-lock.3mf`**\
-  Master wheel with lock. Orginal master wheel mount method completely based on friction. The motor shaft should be pushed to the wheel hole. The hole must be very precisely adjusted to the size of the motor shaft, which is not so easy to achieve with 3D printing, and the shape of the hole does not allow mechanical processing. If the hole is larger than the shaft, then the wheel will constantly fall off. If the hole is very tight, then the effort required to put on and remove the wheel can damage the motor gearbox. For this reason, two of my gearboxes had been damaged. This wheel has been designed to avoid installation and removal problems. These wheels require flat head screws M3x8-14 (2pc) and square nuts M3 (2pc).
-2. **`wheels/wheel-master.3mf`**\
-  Master wheel without a lock. A copy of the original model but the shape of the hole on the outside has been slightly changed.
-3. **`wheels/wheel-slave.3mf`**\
-  Slave wheel. The shape of the teeth and edge of the original slave wheel, slightly, but still differed from the master one. This model uses the same shape as the master wheel in order to minimize possible deviations during straight motion. The hole on the outside has also been slightly enlarged to fit the M4 screw head. It is highly recommended to use M4 screws to install these wheels.
-
-Reflected track
----------------
-
-1. **`track/track-normal.3mf`**\
-  Copy of original track.
-2. **`track/track-reflected.3mf`**\
-  Reflected track. The original track is not symmetrical. Therefore, in order to prevent deviation during straight-line movement, it is advisable to use mirrored tracks on the right and left. The model of the original track can be mirrored in a slicer, you will get the same thing. This model is attached to the project for convenience, and to explain the meaning of its use.
-
-3mf format
-----------
-
-What is the 3mf format? It is a better alternative for stl format. You can know more from this video [youtu.be/4KSB38FYREo](https://youtu.be/4KSB38FYREo).
-
-For this particular project, it will be no big difference between using 3mf instead of stl. If you are happier by using stl for some reason, stl copies are also included. Mainly stl files were added for generating 3d previews for the project on Thingiverse, however, it can be used for print as well. 
-
-Thingiverse project
--------------------
-
-sMARS rover project on Thingiverse was created by files from `3d-print` folder of this repository. It is just an alternative way of getting files.
-
-
+Rover body and chassis are compatible/interchangeable with original SMARS robot project parts and most add-ons.
+All parts are designed to maintain compatibility with existing SMARS robot project, keeping modularity and extensibility.
+All parts apart from flex ones are designed to be printed with PETG on modern precise 3D printers, so they have minimal tolerances.
