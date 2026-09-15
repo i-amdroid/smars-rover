@@ -1,9 +1,13 @@
 Remote TFT
 ==========
 
-Receives 320x240 JPEG video over ESP-NOW from the rover (`rover-esp`) and shows
-it on a 2.4" 240x320 ILI9341 SPI TFT (no touch) connected to a Seeed Studio
-XIAO ESP32-S3.
+A test sketch for the video stream. It receives 320x240 JPEG frames over ESP-NOW
+from the rover (`rover-esp`) and draws them on a 2.4" 240x320 ILI9341 SPI TFT
+(no touch) connected to a Seeed Studio XIAO ESP32-S3.
+
+Use it to confirm that the rover is capturing and transmitting, without
+involving a phone or the USB webcam path at all. It receives only — it sends no
+joystick data, so it is a test rig rather than a working remote.
 
 Built with [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) (display),
 [TJpg_Decoder](https://github.com/Bodmer/TJpg_Decoder) (JPEG decode) and

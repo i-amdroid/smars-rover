@@ -24,6 +24,16 @@ Project features
 * Remote control over ESP-NOW, with a range of up to 100 meters
 * Video streaming over the USB webcam protocol, used to drive the rover and the gripper
 
+Gallery
+-------
+
+| | | |
+|---|---|---|
+| ![Rover with the gripper open, front three-quarter view](./images/photo/01.webp) | ![Rover from the rear, with the external antenna](./images/photo/02.webp) | ![Rover with the gripper reaching forward](./images/photo/03.webp) |
+| ![Rover front three-quarter view, gripper open](./images/photo/04.webp) | ![Rover side profile](./images/photo/05.webp) | ![Rover head-on, camera and lights](./images/photo/06.webp) |
+| ![Rover from behind, antenna raised](./images/photo/07.webp) | ![Rover from above, gripper extended](./images/photo/08.webp) | ![Remote, three-quarter view](./images/photo/09.webp) |
+| ![Remote from the side](./images/photo/10.webp) | ![Remote from above](./images/photo/11.webp) | ![Remote with the phone holder](./images/photo/12.webp) |
+
 Documentation
 -------------
 
