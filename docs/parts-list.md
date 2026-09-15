@@ -46,7 +46,7 @@ Parts list
 | ![image](./../images/parts/m3x5-w-pad.png) | M3x5 screw with pad (screw for computer case) | Rover, alternatives allowed* |  | 11 |
 | ![image](./../images/parts/m3x5.png) | M3x5 screw | Remote, can also be used as an alternative to the M3x5 screw with pad |  | 2 |
 | ![image](./../images/parts/m3x5-flat.png) | M3x5 flat head screw | Remote |  | 1 |
-| ![image](./../images/parts/m3-insert-nut.png) | M3 insert nut | Rover, Remote, optional* |  | 12 |
+| ![image](./../images/parts/m3-insert-nut.png) | M3 insert nut | Rover, Remote, optional* |  | 13 |
 
 <div>* — these parts may require adjustments to the 3D-printed models.</div>
 
