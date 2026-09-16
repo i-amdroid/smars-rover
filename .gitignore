@@ -1,0 +1,11 @@
+.idea/
+.claude/
+tmp/
+software/dozer-esp/
+software/dozer-uno/
+software/test-rx-oled/
+software/test-tx-video/
+software/test-camera/
+software/test-webcam/
+software/test-webcam-idf/
+software/rover-uno/
